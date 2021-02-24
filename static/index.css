@@ -28,6 +28,7 @@
 }
 .content-list {
     height: calc(100vh - 43px - 80px);
+    overflow: auto;
 }
 .footer {
     line-height: 79px;
@@ -107,4 +108,19 @@
 }
 .shavahn-upload__input {
     display: none;
+}
+
+ul > li {
+    margin: 5px 10px;
+    color: #2d2d2d;
+}
+.li-name {
+    padding-right: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.li-size {
+    font-size: 14px;
 }

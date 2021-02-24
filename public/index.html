@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shavahn 文件上传</title>
+    <link rel="stylesheet" href="/static/index.css" />
+    <link rel="stylesheet" href="/static/Button.css" />
+    <link href="/static/icon.svg" rel="shortcut icon" type="image/x-icon">
+</head>
+<body>
+    
+    <section class="body-bg watermark">
+        <header class="header">
+            <h1 class="slogan-title">电脑手机互传文件</h1>
+        </header>
+        <!-- <main class="main-box display-center">
+            <div tabindex="0" class="shavahn-upload shavahn-upload--picture-card" id="proxy-dom">
+                <input id="shavahn-file" type="file" name="file" class="shavahn-upload__input" multiple />
+            </div>
+        </main> -->
+        <main class="content-list">
+            <ul id="container-dom"></ul>
+        </main>
+        <footer class="footer">
+            <input type="file" multiple hidden id="shavahn-file" />
+            <input type="file" multiple hidden id="save-cache-dom" />
+            <button class="ui-button add-file" data-type="primary" id="add-file" >添加文件</button>
+            <button class="ui-button upload-file" data-type="warning" id="upload-file" >上传文件</button>
+        </footer>
+    </section>
+    <script src="/static/axios.js"></script>
+    <script>
+        const fileDOM = document.getElementById("shavahn-file");
+        const handleAddFile = document.getElementById("add-file");
+        const handleUpload = document.getElementById("upload-file");
+        const containerDOM = document.getElementById("container-dom");
+        const saveCacheDom = document.getElementById("save-cache-dom");
+        function proxyFun () {
+            const evt = document.createEvent("mouseEvents");
+            evt.initMouseEvent("click", false, false);
+            fileDOM.dispatchEvent(evt);
+        };
+
+        handleAddFile.addEventListener("click", proxyFun);
+        fileDOM.addEventListener("change", function () {
+            const fileList = Object.keys(this.files);
+            if (fileList.length > 9) {
+                alert("文件数量不能超过九个！");
+            };
+            const HTMLLSIT = formatData2HTML(this.files, fileList);
+            // saveCacheDom.files = this.files;
+            // console.log(this.files, saveCacheDom.files);
+            Object.assign(saveCacheDom.files, this.files);
+            HTMLLSIT.forEach(itemDOM => {
+                containerDOM.innerHTML += itemDOM;
+            });
+        });
+
+        function formatData2HTML (fileData, fileList) {
+            const HTMLLSIT = [];
+            for( let v of fileList ) {
+                const { name, size } = fileData[v];
+                const itemTemp = `<li>
+                    <div class="li-name">${name}</div>
+                    <div class="li-size">${formatSize(size)}</div>
+                </li>`;
+                HTMLLSIT.push(itemTemp);
+            };
+            return HTMLLSIT;
+        }
+
+        function formatSize(fileSize) {
+            if (fileSize < 1024) {
+                return `${fileSize} B`;
+            } else if (fileSize < (1024 * 1024)) {
+                let temp = fileSize / 1024;
+                temp = temp.toFixed(2);
+                return `${temp} KB`;
+            } else if (fileSize < (1024 * 1024 * 1024)) {
+                let temp = fileSize / (1024 * 1024);
+                temp = temp.toFixed(2);
+                return `${temp} MB`; 
+            } else {
+                let temp = fileSize / (1024 * 1024 * 1024);
+                temp = temp.toFixed(2);
+                return `${temp} GB`; 
+            };
+        }
+
+        function upload(fileData) {
+            
+            const vform = new FormData();
+            vform.append("vform", fileData, fileData.name);
+            axios.post("/upload", vform).then(res => {
+                console.log(vform, res);
+            });
+
+        }
+        function uploadFunc () {
+
+            let fileCount = saveCacheDom.files.length;
+            console.log(saveCacheDom.files);
+            return;
+            while (fileCount) {
+                upload(saveCacheDom.files[ fileCount - 1 ]);
+                fileCount--;
+            };
+            saveCacheDom.files = {};
+        }
+        handleUpload.addEventListener("click", uploadFunc);
+    </script>
+</body>
+</html>
