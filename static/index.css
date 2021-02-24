@@ -1,0 +1,110 @@
+* {
+    margin: 0; padding: 0;
+}
+.header {
+    margin-top: 10px;
+}
+.header .slogan-title {
+    color: #555;
+    text-align: center;
+}
+.header .slogan-title::after {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 100vw;
+    margin-top: 10px;
+    background-color: #3d8;
+}
+.display-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.body-bg {
+    height: 100vh;
+    width: 100vw;
+    background-color: #f8f9fa;
+}
+.content-list {
+    height: calc(100vh - 43px - 80px);
+}
+.footer {
+    line-height: 79px;
+    text-align: center;
+}
+.footer::before {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 100vw;
+    background-color: #3d8;
+}
+.footer > .add-file {
+    margin-right: 80px;
+}
+.main-box {
+    width: 50%;
+    height: 60%;
+    background-color: #ffffff;
+    box-shadow: 0 0 15px 0 rgb(0 0 0 / 20%);
+    border-radius: 5px;
+}
+
+.watermark {
+    background: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-size='14' fill-opacity='0.3' text-anchor='middle' dominant-baseline='middle' transform='rotate(-45, 100 100)'%3EShavahn%3C/text%3E%3C/svg%3E");
+}
+
+@media screen and (max-width: 470px){
+    .main-box {
+        width: 100%;
+        height: 100%;
+    }
+    .slogan-title {
+        font-size: 16px;
+    }
+}
+
+
+.shavahn-upload--picture-card {
+    background-color: #fbfdff;
+    border: 1px dashed #c0ccda;
+    border-radius: 6px;
+    box-sizing: border-box;
+    width: 148px;
+    height: 148px;
+    cursor: pointer;
+    line-height: 146px;
+    vertical-align: top;
+}
+.shavahn-upload {
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+}
+.shavahn-upload::after {
+    content: "";
+    display: inline-block;
+    width: 30px;
+    height: 3px;
+    border-radius: 10px;
+    transform: translate(0, -5px);
+    background-color: #8d939c;
+}
+.shavahn-upload::before {
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: 30px;
+    border-radius: 10px;
+    background-color: #8d939c;
+    transform: translate(20px, 8px);
+}
+.shavahn-upload--picture-card i {
+    font-size: 28px;
+    color: #8c939d;
+}
+.shavahn-upload__input {
+    display: none;
+}

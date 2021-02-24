@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shavahn 文件上传</title>
+    <link rel="stylesheet" href="./static/index.css" />
+    <link rel="stylesheet" href="./static/Button.css" />
+    <link href="./static/icon.svg" rel="shortcut icon" type="image/x-icon">
+</head>
+<body>
+    
+    <section class="body-bg watermark">
+        <header class="header">
+            <h1 class="slogan-title">电脑手机互传文件</h1>
+        </header>
+        <!-- <main class="main-box display-center">
+            <div tabindex="0" class="shavahn-upload shavahn-upload--picture-card" id="proxy-dom">
+                <input id="shavahn-file" type="file" name="file" class="shavahn-upload__input" multiple />
+            </div>
+        </main> -->
+        <main class="content-list">
+            
+        </main>
+        <footer class="footer">
+            <button class="ui-button add-file" data-type="warning">添加文件</button>
+            <button class="ui-button upload-file" data-type="warning">上传文件</button>
+        </footer>
+    </section>
+    <script src="./static/axios.js"></script>
+    <script>
+        // const fileDOM = document.getElementById("shavahn-file");
+        // const proxyDom = document.getElementById("proxy-dom");
+        // function proxyFun () {
+        //     const evt = document.createEvent("mouseEvents");
+        //     evt.initMouseEvent("click", false, false);
+        //     fileDOM.dispatchEvent(evt);
+        // };
+        // proxyDom.addEventListener("click", proxyFun);
+        // fileDOM.addEventListener("change", function () {
+        //     console.log(this.files)
+        // });
+    </script>
+</body>
+</html>

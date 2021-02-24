@@ -1,0 +1,24 @@
+{
+  "name": "change-file",
+  "version": "1.0.0",
+  "description": "电脑手机互传文件",
+  "main": "app.js",
+  "dependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/condorheroblog/change-file.git"
+  },
+  "keywords": [],
+  "author": "Condor Hero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/condorheroblog/change-file/issues"
+  },
+  "homepage": "https://github.com/condorheroblog/change-file#readme"
+}
