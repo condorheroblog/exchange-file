@@ -111,16 +111,22 @@
 }
 
 ul > li {
-    margin: 5px 10px;
+    margin: 10px 10px;
     color: #2d2d2d;
 }
 .li-name {
-    padding-right: 50px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.upload-name {
+    width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .li-size {
-    font-size: 14px;
+    color: #909090;
+    font-size: .32rem;
 }

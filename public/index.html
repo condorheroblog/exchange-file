@@ -6,10 +6,11 @@
     <title>Shavahn 文件上传</title>
     <link rel="stylesheet" href="/static/index.css" />
     <link rel="stylesheet" href="/static/Button.css" />
+    <link rel="stylesheet" href="/static/Progress.css" />
     <link href="/static/icon.svg" rel="shortcut icon" type="image/x-icon">
 </head>
 <body>
-    
+    <script src="../static/number-precision.js"></script>
     <section class="body-bg watermark">
         <header class="header">
             <h1 class="slogan-title">电脑手机互传文件</h1>
@@ -20,22 +21,35 @@
             </div>
         </main> -->
         <main class="content-list">
-            <ul id="container-dom"></ul>
+            <ul id="container-dom">
+                <!-- <li>
+                    <div class="li-name">文件名：${name}</div>
+                    <div class="li-size">文件大小：${formatSize(size)}</div>
+                    <progress class="ui-progress" value="0.4" width="100%" ></progress>
+                </li>
+                <li>
+                    <div class="li-name">文件名：${name}</div>
+                    <div class="li-size">文件大小：${formatSize(size)}</div>
+                </li>
+                <li>
+                    <div class="li-name">文件名：${name}</div>
+                    <div class="li-size">文件大小：${formatSize(size)}</div>
+                </li> -->
+            </ul>
         </main>
         <footer class="footer">
             <input type="file" multiple hidden id="shavahn-file" />
-            <input type="file" multiple hidden id="save-cache-dom" />
             <button class="ui-button add-file" data-type="primary" id="add-file" >添加文件</button>
             <button class="ui-button upload-file" data-type="warning" id="upload-file" >上传文件</button>
         </footer>
     </section>
     <script src="/static/axios.js"></script>
     <script>
+        let FILEARR = [];
         const fileDOM = document.getElementById("shavahn-file");
         const handleAddFile = document.getElementById("add-file");
         const handleUpload = document.getElementById("upload-file");
         const containerDOM = document.getElementById("container-dom");
-        const saveCacheDom = document.getElementById("save-cache-dom");
         function proxyFun () {
             const evt = document.createEvent("mouseEvents");
             evt.initMouseEvent("click", false, false);
@@ -49,9 +63,12 @@
                 alert("文件数量不能超过九个！");
             };
             const HTMLLSIT = formatData2HTML(this.files, fileList);
-            // saveCacheDom.files = this.files;
-            // console.log(this.files, saveCacheDom.files);
-            Object.assign(saveCacheDom.files, this.files);
+            const oldLen = FILEARR.length;
+            for( let v of fileList ) {
+                this.files[v]["progress-loaded"] = `progress-loaded${oldLen + Number(v)}`;
+                this.files[v]["progress-text"] = `progress-text${oldLen + Number(v)}`;
+                FILEARR.push(this.files[v]);
+            };
             HTMLLSIT.forEach(itemDOM => {
                 containerDOM.innerHTML += itemDOM;
             });
@@ -61,9 +78,14 @@
             const HTMLLSIT = [];
             for( let v of fileList ) {
                 const { name, size } = fileData[v];
+                const idx = FILEARR.length + Number(v);
                 const itemTemp = `<li>
-                    <div class="li-name">${name}</div>
-                    <div class="li-size">${formatSize(size)}</div>
+                    <div class="li-name">
+                        <span class="upload-name">文件名：${name}</span>
+                        <span class="progress-text" id="progress-text${idx}">100%</span>
+                    </div>
+                    <div class="li-size">文件大小：${formatSize(size)}</div>
+                    <progress class="ui-progress" value="0" id="progress-loaded${idx}" width="100%" >ii</progress>
                 </li>`;
                 HTMLLSIT.push(itemTemp);
             };
@@ -92,21 +114,26 @@
             
             const vform = new FormData();
             vform.append("vform", fileData, fileData.name);
-            axios.post("/upload", vform).then(res => {
+            axios.post("/upload", vform, {
+                onUploadProgress: function (progressEvent) {
+                    const { loaded, total } = progressEvent;
+                    const perProgress = NP.round(loaded / total, 3);
+                    const pregressLoadedDOM = document.getElementById(fileData["progress-loaded"]);
+                    const progressTextDOM = document.getElementById(fileData["progress-text"]);
+                    pregressLoadedDOM.value = perProgress;
+                    progressTextDOM.textContent = `${NP.times(perProgress, 100)}%`;
+                },
+            }).then(res => {
                 console.log(vform, res);
             });
 
         }
         function uploadFunc () {
 
-            let fileCount = saveCacheDom.files.length;
-            console.log(saveCacheDom.files);
-            return;
-            while (fileCount) {
-                upload(saveCacheDom.files[ fileCount - 1 ]);
-                fileCount--;
+            for( let v of FILEARR ) {
+                upload(v);
             };
-            saveCacheDom.files = {};
+            FILEARR = [];
         }
         handleUpload.addEventListener("click", uploadFunc);
     </script>
