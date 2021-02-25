@@ -21,7 +21,6 @@ app.post("/upload", function (req, res) {
     const form = new multiparty.Form({ uploadDir: "upload" });
     form.parse(req);
     form.on("file", function(name, file) {
-        console.log(name, file)
         const { path, originalFilename } = file;
         fs.renameSync(path, `upload/${originalFilename}`);
         res.json({

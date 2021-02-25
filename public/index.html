@@ -10,6 +10,7 @@
     <link href="/static/icon.svg" rel="shortcut icon" type="image/x-icon">
 </head>
 <body>
+    
     <script src="../static/number-precision.js"></script>
     <section class="body-bg watermark">
         <header class="header">
@@ -40,7 +41,7 @@
         <footer class="footer">
             <input type="file" multiple hidden id="shavahn-file" />
             <button class="ui-button add-file" data-type="primary" id="add-file" >添加文件</button>
-            <button class="ui-button upload-file" data-type="warning" id="upload-file" >上传文件</button>
+            <button class="ui-button upload-file" data-type="warning" id="upload-file" disabled >上传文件</button>
         </footer>
     </section>
     <script src="/static/axios.js"></script>
@@ -48,7 +49,7 @@
         let FILEARR = [];
         const fileDOM = document.getElementById("shavahn-file");
         const handleAddFile = document.getElementById("add-file");
-        const handleUpload = document.getElementById("upload-file");
+        const handleUploadDOM = document.getElementById("upload-file");
         const containerDOM = document.getElementById("container-dom");
         function proxyFun () {
             const evt = document.createEvent("mouseEvents");
@@ -57,6 +58,8 @@
         };
 
         handleAddFile.addEventListener("click", proxyFun);
+
+        // 选择文件
         fileDOM.addEventListener("change", function () {
             const fileList = Object.keys(this.files);
             if (fileList.length > 9) {
@@ -65,13 +68,20 @@
             const HTMLLSIT = formatData2HTML(this.files, fileList);
             const oldLen = FILEARR.length;
             for( let v of fileList ) {
-                this.files[v]["progress-loaded"] = `progress-loaded${oldLen + Number(v)}`;
-                this.files[v]["progress-text"] = `progress-text${oldLen + Number(v)}`;
+                const domIdx = oldLen + Number(v);
+                this.files[v]["progress-loaded"] = `progress-loaded${domIdx}`;
+                this.files[v]["progress-text"] = `progress-text${domIdx}`;
+                this.files[v]["remove-li"] = `remove-li${domIdx}`;
                 FILEARR.push(this.files[v]);
             };
             HTMLLSIT.forEach(itemDOM => {
                 containerDOM.innerHTML += itemDOM;
             });
+
+            // 是否有待传文件
+            if ( FILEARR.length > 0 && handleUploadDOM.disabled ) {
+                handleUploadDOM.disabled = false;
+            };
         });
 
         function formatData2HTML (fileData, fileList) {
@@ -79,14 +89,17 @@
             for( let v of fileList ) {
                 const { name, size } = fileData[v];
                 const idx = FILEARR.length + Number(v);
-                const itemTemp = `<li>
-                    <div class="li-name">
-                        <span class="upload-name">文件名：${name}</span>
-                        <span class="progress-text" id="progress-text${idx}">100%</span>
-                    </div>
-                    <div class="li-size">文件大小：${formatSize(size)}</div>
-                    <progress class="ui-progress" value="0" id="progress-loaded${idx}" width="100%" >ii</progress>
-                </li>`;
+                const itemTemp = `
+                    <li id="remove-li${idx}" >
+                        <div class="li-name">
+                            <span class="upload-name">${name}</span>
+                            <span class="progress-text" id="progress-text${idx}">0%</span>
+                        </div>
+                        <div class="li-size">文件大小：${formatSize(size)}</div>
+                        <progress class="ui-progress" value="0" id="progress-loaded${idx}" width="100%" >ii</progress>
+                    </li>
+                    
+                `;
                 HTMLLSIT.push(itemTemp);
             };
             return HTMLLSIT;
@@ -124,7 +137,13 @@
                     progressTextDOM.textContent = `${NP.times(perProgress, 100)}%`;
                 },
             }).then(res => {
-                console.log(vform, res);
+                // 上传完成
+
+                const removeLiDOM = document.getElementById(fileData["remove-li"]);
+                removeLiDOM.classList.add("fadeout");
+                setTimeout(() => {
+                    containerDOM.removeChild(removeLiDOM);
+                }, 800);
             });
 
         }
@@ -134,8 +153,9 @@
                 upload(v);
             };
             FILEARR = [];
+            handleUploadDOM.disabled = true;
         }
-        handleUpload.addEventListener("click", uploadFunc);
+        handleUploadDOM.addEventListener("click", uploadFunc);
     </script>
 </body>
 </html>

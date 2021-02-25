@@ -130,3 +130,62 @@ ul > li {
     color: #909090;
     font-size: .32rem;
 }
+
+/* 淡出 */
+
+@keyframes fadeout {
+    0% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+    10% {
+        opacity: .9;
+        transform: translateY(-5%);
+    }
+    20% {
+        opacity: .8;
+        transform: translateY(-10%);
+    }
+    30% {
+        opacity: .7;
+        transform: translateY(-15%);
+    }
+    40% {
+        opacity: .6;
+        transform: translateY(-20%);
+    }
+    50% {
+        opacity: .5;
+        transform: translateY(-25%);
+    }
+    60% {
+        opacity: .4;
+        transform: translateY(-30%);
+    }
+    70% {
+        opacity: .3;
+        transform: translateY(-35%);
+    }
+    80% {
+        opacity: .2;
+        transform: translateY(-40%);
+    }
+    90% {
+        opacity: .1;
+        transform: translateY(-45%);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50%);
+    }
+}
+
+
+.fadeout {
+    animation: fadeout .8s;
+}
+
+
+/* 侧滑删除 */
+/* 纯CSS实现微信列表左滑显示按钮的交互效果 */
+/* https://www.zhangxinxu.com/wordpress/2020/12/css-touch-scroll-show-button/ */
