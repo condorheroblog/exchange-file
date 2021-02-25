@@ -45,6 +45,8 @@
         </footer>
     </section>
     <script src="/static/axios.js"></script>
+    <script src="/static/EventUtil.js"></script>
+    <script src="/static/formatSize.js"></script>
     <script>
         let FILEARR = [];
         const fileDOM = document.getElementById("shavahn-file");
@@ -105,24 +107,6 @@
             return HTMLLSIT;
         }
 
-        function formatSize(fileSize) {
-            if (fileSize < 1024) {
-                return `${fileSize} B`;
-            } else if (fileSize < (1024 * 1024)) {
-                let temp = fileSize / 1024;
-                temp = temp.toFixed(2);
-                return `${temp} KB`;
-            } else if (fileSize < (1024 * 1024 * 1024)) {
-                let temp = fileSize / (1024 * 1024);
-                temp = temp.toFixed(2);
-                return `${temp} MB`; 
-            } else {
-                let temp = fileSize / (1024 * 1024 * 1024);
-                temp = temp.toFixed(2);
-                return `${temp} GB`; 
-            };
-        }
-
         function upload(fileData) {
             
             const vform = new FormData();
@@ -156,6 +140,12 @@
             handleUploadDOM.disabled = true;
         }
         handleUploadDOM.addEventListener("click", uploadFunc);
+
+        function handleLeft () {
+            globalThis.location.href = `download.html`;
+        }
+        // 绑定左滑事件
+        EventUtil.bindEvent(document.documentElement, "swipeleft", handleLeft);
     </script>
 </body>
 </html>

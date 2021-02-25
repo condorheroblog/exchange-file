@@ -4,9 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>手机下载</title>
-    <link href="../static/icon.svg" rel="shortcut icon" type="image/x-icon">
+    <link rel="stylesheet" href="../static/Table.css" />
+    <link href="../static/icon.svg" rel="shortcut icon" type="image/x-icon" />
 </head>
 <body>
-    下载列表
+    <table class="ui-table">
+        <thead>
+            <!-- <tr>
+                <th>文件名</th>
+                <th>大小</th>
+                <th>操作</th>
+            </tr> -->
+        </thead>
+        <tbody id="table-body-dom" >
+            <tr>
+                <td>第1行项目1</td>
+                <td>第1行项目2</td>
+                <td>第1行项目3</td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="/static/EventUtil.js"></script>
+    <script src="/static/axios.js"></script>
+    <script>
+        function handleRight () {
+            globalThis.location.href = `index.html`;
+        }
+        // 绑定右滑事件
+        EventUtil.bindEvent(document.documentElement, "swiperight", handleRight);
+
+        const tableBodyDOM = document.getElementById("table-body-dom");
+        const getFileList = axios.get("/download-list");
+        getFileList.then(res => {
+            const { downloadList } = res.data;
+            for ( let v of downloadList ) {
+                const { fileName, fileSize, downloadUrl } = v;
+                tableBodyDOM.innerHTML += 
+                `
+                    <tr>
+                        <td>${fileName}</td>
+                        <td>${fileSize}</td>
+                        <td><a href="${downloadUrl}" download="${fileName}" title="下载" >下载</a></td>
+                    </tr>
+                `;
+            }
+            
+        });
+    </script>
 </body>
 </html>

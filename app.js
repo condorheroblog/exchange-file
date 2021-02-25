@@ -4,7 +4,8 @@ const path = require("path");
 const express = require("express");
 const app =  express();
 const fs = require("fs");
-const getIPAdress = require("./util/getIPAdress");
+const httpUrl = require("./util/getHttpUrl");
+const formatSize = require("./static/formatSize");
 function resolvePath (dir) {
     return path.join(__dirname, dir);
 };
@@ -17,6 +18,7 @@ app.use("/static", express.static(resolvePath("/static")));
 app.use(bodyParser.json({ limit: "5000mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// 上传接口
 app.post("/upload", function (req, res) {
     const form = new multiparty.Form({ uploadDir: "upload" });
     form.parse(req);
@@ -30,8 +32,38 @@ app.post("/upload", function (req, res) {
     })
 });
 
-const myHost = getIPAdress();
-const port = 80;
-app.listen(port, function () {
-    console.log(`please open link: http://${myHost}:${port}/`);
+// 下载列表接口
+function getFileList () {
+    let downloadList = [];
+    const filesArr = fs.readdirSync(resolvePath("download"));
+    filesArr.forEach(fileName => {
+        if (fileName === "download.html") {
+            return;
+        }
+        const relPath = resolvePath(`download/${fileName}`);
+        const stat = fs.statSync(relPath);
+        if (!stat.isDirectory()) {
+            downloadList.push({
+                fileName,
+                fileSize: formatSize(stat.size),
+                downloadUrl: `${httpUrl.url}${fileName}`
+            })
+        }
+    });
+
+    return downloadList;
+}
+
+app.get("/download-list", function (req, res) {
+    const downloadList = getFileList();
+    res.json({
+        downloadList,
+        code: 0,
+        message: "请求成功"
+    });
+});
+
+
+app.listen(httpUrl.port, function () {
+    console.log(`please open link: ${httpUrl.url}`);
 });
