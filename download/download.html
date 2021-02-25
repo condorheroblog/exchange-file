@@ -5,27 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>手机下载</title>
     <link rel="stylesheet" href="../static/Table.css" />
+    <link rel="stylesheet" href="../static/download.css" />
     <link href="../static/icon.svg" rel="shortcut icon" type="image/x-icon" />
 </head>
 <body>
     <table class="ui-table">
         <thead>
-            <!-- <tr>
+            <tr>
                 <th>文件名</th>
                 <th>大小</th>
                 <th>操作</th>
-            </tr> -->
+            </tr>
         </thead>
         <tbody id="table-body-dom" >
-            <tr>
+            <!-- <tr>
                 <td>第1行项目1</td>
                 <td>第1行项目2</td>
                 <td>第1行项目3</td>
-            </tr>
+            </tr> -->
         </tbody>
     </table>
     <script src="/static/EventUtil.js"></script>
     <script src="/static/axios.js"></script>
+    <script>
+        function handleDownloadList () {
+            const getFileList = axios.get("/download-list");
+            getFileList.then(res => {
+                const { downloadList } = res.data;
+                for ( let v of downloadList ) {
+                    const { fileName, fileSize, downloadUrl } = v;
+                    tableBodyDOM.innerHTML += 
+                    `
+                        <tr>
+                            <td class="text-ellipsis" >${fileName}</td>
+                            <td class="text-ellipsis" >${fileSize}</td>
+                            <td class="text-ellipsis" ><a href="${downloadUrl}" download="${fileName}" title="下载" >下载</a></td>
+                        </tr>
+                    `;
+                }
+                
+            });
+        }
+    </script>
     <script>
         function handleRight () {
             globalThis.location.href = `index.html`;
@@ -34,21 +55,21 @@
         EventUtil.bindEvent(document.documentElement, "swiperight", handleRight);
 
         const tableBodyDOM = document.getElementById("table-body-dom");
-        const getFileList = axios.get("/download-list");
-        getFileList.then(res => {
-            const { downloadList } = res.data;
-            for ( let v of downloadList ) {
-                const { fileName, fileSize, downloadUrl } = v;
-                tableBodyDOM.innerHTML += 
-                `
-                    <tr>
-                        <td>${fileName}</td>
-                        <td>${fileSize}</td>
-                        <td><a href="${downloadUrl}" download="${fileName}" title="下载" >下载</a></td>
-                    </tr>
-                `;
+        handleDownloadList();
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.emit("client", {
+            name: "Shavahn",
+            text: "这是测试数据"
+        });
+        socket.on("new", function ({ code }) {
+            if ( code === 0 ) {
+                tableBodyDOM.innerHTML = "";
+                handleDownloadList();
             }
-            
         });
     </script>
 </body>

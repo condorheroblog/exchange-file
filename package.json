@@ -4,6 +4,7 @@
   "description": "电脑手机互传文件",
   "main": "app.js",
   "dependencies": {
+    "chokidar": "^3.5.1",
     "express": "^4.17.1",
     "multiparty": "^4.2.2",
     "nodemon": "^2.0.7",

@@ -4,11 +4,20 @@ const path = require("path");
 const express = require("express");
 const app =  express();
 const fs = require("fs");
+const chokidar = require("chokidar");
 const httpUrl = require("./util/getHttpUrl");
 const formatSize = require("./static/formatSize");
+const e = require("express");
 function resolvePath (dir) {
     return path.join(__dirname, dir);
 };
+
+
+//创建服务器使用的
+const httpServer = require("http").createServer(app);
+//socket 负责全双工通信
+const options = { /* ... */ };
+const IO = require("socket.io")(httpServer, options);
 
 
 app.use(express.static(resolvePath("/download")));
@@ -63,7 +72,35 @@ app.get("/download-list", function (req, res) {
     });
 });
 
+IO.on("connection", function(socket) {
+    socket.on("client", function (data) {
+        console.log(data);
+    });
+    socket.on("disconnect", function () {
+        console.log("socket 成功断开！");
+    });
+    // setTimeout(() => {
+    //     socket.emit("message", "消息更新")
+    // }, 3000);
+    chokidar.watch(resolvePath("download"), {
+        ignored: /download.html/,
+        ignoreInitial: true,
+    }).on("all", (event, path) => {
+        if ( event === "change" || event === "add" || event === "unlink" ) {
+            try {
+                socket.emit("new", {
+                    code: 0,
+                    message: "文件变动!"
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    });
+    console.log("socket 连接成功！");
+});
 
-app.listen(httpUrl.port, function () {
+
+httpServer.listen(httpUrl.port, function () {
     console.log(`please open link: ${httpUrl.url}`);
 });
