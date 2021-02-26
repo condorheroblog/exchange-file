@@ -64,9 +64,6 @@
         // 选择文件
         fileDOM.addEventListener("change", function () {
             const fileList = Object.keys(this.files);
-            if (fileList.length > 9) {
-                alert("文件数量不能超过九个！");
-            };
             const HTMLLSIT = formatData2HTML(this.files, fileList);
             const oldLen = FILEARR.length;
             for( let v of fileList ) {
