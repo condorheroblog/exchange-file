@@ -1,6 +1,6 @@
 const getIPAdress = require("./getIPAdress");
 const myHost = getIPAdress();
-const port = 80;
+const port = 8848;
 
 module.exports = {
     port,
